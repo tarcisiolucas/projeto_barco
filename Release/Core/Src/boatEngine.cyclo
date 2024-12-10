@@ -1,0 +1,2 @@
+../Core/Src/boatEngine.c:10:6:changeDCMotorSpeed	1
+../Core/Src/boatEngine.c:17:6:changeDCMotorDirection	5

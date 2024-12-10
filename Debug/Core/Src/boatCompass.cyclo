@@ -1,0 +1,4 @@
+../Core/Src/boatCompass.c:21:6:startCompassCalibration	1
+../Core/Src/boatCompass.c:27:6:endCompassCalibration	2
+../Core/Src/boatCompass.c:45:9:readDirection	7
+../Core/Src/boatCompass.c:82:6:processCompassCalibration	3

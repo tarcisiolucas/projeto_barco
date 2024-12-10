@@ -1,0 +1,4 @@
+../Core/Src/boatCompass.c:20:6:startCompassCalibration	0	static
+../Core/Src/boatCompass.c:25:6:endCompassCalibration	12	static
+../Core/Src/boatCompass.c:42:9:readDirection	32	static
+../Core/Src/boatCompass.c:78:6:processCompassCalibration	8	static
