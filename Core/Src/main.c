@@ -1,6 +1,5 @@
 /* USER CODE BEGIN Header */
 /**
-/*
  * Projeto: Trabalho final da disciplina de projeto de sistemas embarcados
  * Descrição: Desenvolvimento do código de um sistema embarcado para controle de um barco
  *
@@ -24,6 +23,14 @@
 #include "boatCompass.h"
 #include "boatEngine.h"
 #include "boatServo.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <assert.h>
+#include "JDY-18.h"
+#include "location_service.h"
+#include "PID.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,10 +57,38 @@ TIM_HandleTypeDef htim4;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
+location_t location;
+
+scan_t testDevices;
+
 /* USER CODE BEGIN PV */
 int16_t boatPos;
 bool connection;
-bool iniciou = false;
+int iniciou = 0;
+int16_t direction;
+uint16_t servoPosition;
+float arrivalAngle;
+float_t angleControlAction;
+
+#define SERVO_CONTROLLER_KP 1.57
+#define SERVO_CONTROLLER_KI 0.25
+#define SERVO_CONTROLLER_KD 0
+
+#define SERVO_MAX_ANGLE 180
+#define SERVO_MIN_ANGLE 0
+
+#define CYCLE_PERIOD_MS 3000
+
+float kp = (float) SERVO_CONTROLLER_KP;
+float ki = (float) SERVO_CONTROLLER_KI;
+float kd = (float) SERVO_CONTROLLER_KD;
+
+float servoMax = (float) SERVO_MAX_ANGLE;
+float servoMin = (float) SERVO_MIN_ANGLE;
+
+PID_Controller_t servoPidController;
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -81,7 +116,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -90,7 +124,8 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */;
-  /* USER CODE END Init */
+
+//  /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
@@ -108,26 +143,35 @@ int main(void)
   MX_TIM3_Init();
 
   /* USER CODE BEGIN 2 */
-//  changeDCMotorDirection('t');
+  PID_Create(&servoPidController, kp, ki, kd, CYCLE_PERIOD_MS);
+  PID_SetSaturationLimits(&servoPidController, servoMin, servoMax);
   HMC5883L_initialize();
   I2Cdev_init(&hi2c1);
-  processCompassCalibration();
-  /* USER CODE END 2 */
+  LocationService_Init(&huart3);
+  setServoPosition(180, &htim4);
+  HAL_Delay(13000);
+  changeDCMotorDirection('t');
+  setServoPosition(90, &htim4);
+  HAL_Delay(10000);
 
+//  processCompassCalibration();
+  /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-    /* USER CODE BEGIN 3 */
-	iniciou += 1;
-	HAL_Delay(100);
-	connection = HMC5883L_testConnection();
-	if(!connection) {
-		I2Cdev_init(&hi2c1);
-		  HMC5883L_initialize();
-	}
-	boatPos = readDirection();
+		iniciou += 1;
+		LocationService_UpdateLocation(&huart3);
+		location = LocationService_GetLocation();
+		direction = readDirection();
+		arrivalAngle = LocationService_GetArrivalAngle();
+
+		PID_SetSetpoint(&servoPidController, arrivalAngle);
+		PID_ProcessInput(&servoPidController, direction);
+		angleControlAction = PID_CalculateControlAction(&servoPidController);
+		setServoPosition(servoPosition, &htim4);
+
+
   }
   /* USER CODE END 3 */
 }
@@ -406,7 +450,9 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+//
+//}
 /* USER CODE END 4 */
 
 /**

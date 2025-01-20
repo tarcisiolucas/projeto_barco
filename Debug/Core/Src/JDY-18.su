@@ -1,0 +1,6 @@
+../Core/Src/JDY-18.c:30:6:BLE_Init	16	static
+../Core/Src/JDY-18.c:34:6:BLE_SendInstruction	32	static
+../Core/Src/JDY-18.c:42:6:BLE_ScanDevices	24	static
+../Core/Src/JDY-18.c:64:6:JDY18Driver_LoadDeviceInfo	104	dynamic
+../Core/Src/JDY-18.c:118:6:JDY18Driver_ParseScanResponse	24	static
+../Core/Src/JDY-18.c:153:6:BLE_GetScannedDevices	16	static

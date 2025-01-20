@@ -1,2 +1,2 @@
-../Core/Src/boatServo.c:10:6:setPWM	40	static
-../Core/Src/boatServo.c:24:6:setServoPosition	112	static
+../Core/Src/boatServo.c:10:6:setPWM	56	static
+../Core/Src/boatServo.c:24:6:setServoPosition	32	static
