@@ -115,7 +115,7 @@ float LocationService_GetArrivalAngle()
 {
 
 	float deltaX = masterLocation.longitude - slaveBeaconLocationB2.longitude;
-	    float deltaY = masterLocation.latitude  - slaveBeaconLocationB2.latitude;
+	float deltaY = masterLocation.latitude  - slaveBeaconLocationB2.latitude;
 
 	    // Calcula o ângulo em radianos usando atan2(Y, X)
 	    float angleRadians = atan2(deltaY, deltaX);

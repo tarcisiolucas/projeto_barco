@@ -7,11 +7,11 @@
 
 #include "boatEngine.h"
 
-void changeDCMotorSpeed(uint16_t speed, TIM_HandleTypeDef htim)
+void changeDCMotorSpeed(uint16_t speed, TIM_HandleTypeDef* htim)
 {
   if (speed > 16800)
     speed = 16800;
-  __HAL_TIM_SET_COMPARE(&htim, TIM_CHANNEL_2, speed);
+  __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_2, speed);
 }
 
 void changeDCMotorDirection(char d)

@@ -43,6 +43,6 @@ void changeDCMotorDirection(char d);
  * @param htim Estrutura do tipo TIM_HandleTypeDef que representa o timer configurado
  *             para controlar o PWM do motor.
  */
-void changeDCMotorSpeed(uint16_t speed, TIM_HandleTypeDef htim);
+void changeDCMotorSpeed(uint16_t speed, TIM_HandleTypeDef* htim);
 
 #endif /* INC_BOATENGINE_H_ */

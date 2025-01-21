@@ -149,12 +149,13 @@ int main(void)
   I2Cdev_init(&hi2c1);
   LocationService_Init(&huart3);
   setServoPosition(180, &htim4);
+  processCompassCalibration();
   HAL_Delay(13000);
   changeDCMotorDirection('t');
+  changeDCMotorSpeed(16800, &htim3);
   setServoPosition(90, &htim4);
-  HAL_Delay(10000);
+  HAL_Delay(45000);
 
-//  processCompassCalibration();
   /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -164,12 +165,12 @@ int main(void)
 		LocationService_UpdateLocation(&huart3);
 		location = LocationService_GetLocation();
 		direction = readDirection();
-		arrivalAngle = LocationService_GetArrivalAngle();
+		arrivalAngle = LocationService_GetArrivalAngle()+120;
 
 		PID_SetSetpoint(&servoPidController, arrivalAngle);
 		PID_ProcessInput(&servoPidController, direction);
-		angleControlAction = PID_CalculateControlAction(&servoPidController);
-		setServoPosition(servoPosition, &htim4);
+		angleControlAction = -(((int)arrivalAngle - direction)) % 180 ;
+		setServoPosition(angleControlAction, &htim4);
 
 
   }
